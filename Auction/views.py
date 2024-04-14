@@ -140,32 +140,51 @@ def auction_detail(request, auction_id):
     return render(request, 'auction_detail.html', {'auction': auction})
 @login_required   
 def browseauctions(request, id):
-    auctions = get_object_or_404(Products, id = id)
-    return render(request, 'browseauctions.html', {'auction': auctions})
+    auctions = Products.objects.get(pk = id)
+    try:
+        if request.method == "POST":
+            if auctions.place_bid( bid_amount= float(request.POST.get('bid_amount'))):
+                Bid.objects.create(bidder = request.user,item = auctions , bid_amount = float(request.POST.get('bid_amount')))
+                print('Bid Place Successfully')
+                bid_details =  Bid.objects.filter(bidder = request.user, item = auctions).order_by('-timestamp').all()
+                return redirect('product_detail', item_id = id)
+            else:
+                print("Something went wrong")
+    except Exception as e:
+        print(e)
+    return render(request, 'browseauctions.html' , {'auction': auctions})
+
+# def place_bid(request, item_id):
+#     product = get_object_or_404(Products, id=item_id)
+#     if request.method == 'POST':
+#         form = BidForm(request.POST)
+#         if form.is_valid():
+#             bid_amount = form.cleaned_data['bid_amount']
+#             if bid_amount > product.current_price:
+#                 product.current_price = bid_amount
+#                 product.save()
+#                 print(request.user.id)
+#                 Bid.objects.create(bidder = request.user.id, item = item_id, bid_amount = bid_amount)
+#                 return redirect('product_detail', item_id=item_id)
+#             else:
+#                 form.add_error('bid_amount', 'Bid amount must be higher than the current price.')
+#     else:
+        
+#         form = BidForm()
+#     return render(request, 'place_bid.html', {'form': form, 'product': product})
+
 
 def place_bid(request, item_id):
-    product = get_object_or_404(Products, id=item_id)
-    if request.method == 'POST':
-        form = BidForm(request.POST)
-        if form.is_valid():
-            bid_amount = form.cleaned_data['bid_amount']
-            if bid_amount > product.current_price:
-                product.current_price = bid_amount
-                product.save()
-                print(request.user.id)
-                Bid.objects.create(bidder = request.user.id, item = item_id, bid_amount = bid_amount)
-                return redirect('product_detail', item_id=item_id)
-            else:
-                form.add_error('bid_amount', 'Bid amount must be higher than the current price.')
-    else:
-        
-        form = BidForm()
-    return render(request, 'place_bid.html', {'form': form, 'product': product})
+    if request.method == "POST":
+        product_detail =  get_object_or_404(Products, id = item_id)
+        print(product_detail)
+    return render(request,'home.html')
 
 def product_detail(request, item_id):
     # Retrieve the product object based on the provided item_id
     product = get_object_or_404(Products, pk=item_id)
-    return render(request, 'product_detail.html', {'product': product})
+    bid_details =  Bid.objects.filter(bidder = request.user, item = product).order_by('-timestamp').all()
+    return render(request, 'product_detail.html', {'product': product, 'bid_details': bid_details})
 
 @method_decorator(login_required,name='dispatch')
 class CategoryView(View):

@@ -7,7 +7,15 @@
 <img src="{{ product.image.url }}" alt="{{ product.name }}">
 <p>Description: {{ product.description }}</p>
 <p>Start Price: ${{ product.start_price }}</p>
-<p>Current Price: ${{ product.current_price }} <a href="{% url 'browseauctions' product.id %}">Add Your Price</a></p>
+<p>Current Price: ${{ product.current_price }} </p>
+<p>Your Price:  <a href="{% url 'browseauctions' product.pk %}">Add Your Price</a></p>
+{% if bid_details %}
+<ul style="list-style: none;">
+    {% for bids in bid_details %}
+    <li> {{forloop.counter}}: {{bids.bid_amount}} </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <p>Auction End Time: {{ product.auction_end_time }}</p>
 <p>Seller: {{ product.seller.username }}</p>
 <p>Status: {{ product.status }}</p>
