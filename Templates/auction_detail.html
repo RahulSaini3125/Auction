@@ -1,0 +1,21 @@
+<!-- yourapp/templates/auction_detail.html -->
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main-content %}
+    <section class="auction-detail">
+        <div class="auction-image">
+            <img src="{% static 'images/auction_image.jpg' %}" alt="{{ auction.title }}">
+        </div>
+        <div class="auction-info">
+            <h2>{{ auction.title }}</h2>
+            <p>{{ auction.description }}</p>
+            <p class="current-bid">Current Bid: ${{ auction.current_bid }}</p>
+            <p>Ends: {{ auction.end_date }}</p>
+            <p>Seller: {{ auction.seller.username }}</p>
+            <a href="#" class="btn btn-primary">Place Bid</a>
+        </div>
+    </section>
+{% endblock main-content %}

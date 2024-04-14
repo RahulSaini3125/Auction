@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main-content %}
+<h1>{{ product.name }}</h1>
+<img src="{{ product.image.url }}" alt="{{ product.name }}">
+<p>Description: {{ product.description }}</p>
+<p>Start Price: ${{ product.start_price }}</p>
+<p>Current Price: ${{ product.current_price }} <a href="{% url 'browseauctions' product.id %}">Add Your Price</a></p>
+<p>Auction End Time: {{ product.auction_end_time }}</p>
+<p>Seller: {{ product.seller.username }}</p>
+<p>Status: {{ product.status }}</p>
+{% endblock main-content %}

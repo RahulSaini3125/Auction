@@ -1,0 +1,14 @@
+<!-- auction_app/templates/auction_app/signup.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block main-content %}
+<h2>Sign Up</h2>
+<form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+</form>
+{% endblock main-content %}

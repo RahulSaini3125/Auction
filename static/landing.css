@@ -1,0 +1,22 @@
+
+  
+.header-section {
+    /* background-image:('static/images/25.jpg'); */
+    background-image: url('/static/images/3.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    padding: 235px;
+}
+  
+.header-section h1 {
+    font-size: 48px;
+    font-weight: bold;
+    color: black;
+}
+  
+.header-section p {
+    font-size: 32px;
+    color: black;
+    font-weight: bold;
+}

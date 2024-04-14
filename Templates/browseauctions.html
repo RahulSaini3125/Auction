@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main-content %}
+<h1>Browse Auctions</h1>
+<ul>
+        <li>
+            <h2>{{ auction.product }}</h2>
+            <p>{{ auction.description }}</p>
+            <img src="{{ auction.image.url }}" alt="{{ auction.product }}">
+            <p>Start Price: Rs.{{ auction.start_price }}</p>
+            <p>End Date: {{ auction.auction_end_time }}</p>
+            <p>Featured: {% if auction.is_featured %} Yes {% else %} No {% endif %}</p>
+            <p>Seller: {{ auction.seller }}</p>
+            <form method="post" action="{% url 'place_bid' auction.id %}">
+                {% csrf_token %}
+                <label for="bid_amount">Place Bid:</label>
+                <input type="number" name="bid_amount" id="bid_amount" min="{{ auction.start_price }}" step="1.0">
+                <button type="submit">Submit Bid</button>
+            </form>
+        </li>
+</ul>
+{% endblock main-content %}
