@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login,logout
-from .forms import CustomerRegistrationForm,CustomerProfileForm,AuctionForm,BidForm
-from .models import Bid, Customer,auction,Wishlist,Products,Payment,Cart,OrderPlaced
+from .forms import CustomerRegistrationForm,CustomerProfileForm,AuctionForm,BidForm,ProductForm
+from .models import Bid, Customer,auction,Wishlist,Products,Payment,Cart,OrderPlaced, CATEGORY_CHOICES
 from django.contrib import messages
 from django.views import View
 from django.contrib.auth.decorators import login_required
@@ -352,3 +352,27 @@ def orders(request):
         wishitem = len(Wishlist.objects.filter(user=request.user))
     order_placed = OrderPlaced.objects.filter(user = request.user )
     return render(request, 'orders.html',locals())
+
+def addproduct(request):
+    addproduct_dict = {}
+    addproduct_dict['choices'] = dict(CATEGORY_CHOICES)
+    if request.method == "POST":
+        form_dict  = request.POST
+        file_dict = request.FILES
+        print(file_dict)
+        add_products = Products.objects.create(
+            name = form_dict['ProductName'], 
+            description = form_dict['ProductDescription'], 
+            image = file_dict['ProductImage'],
+            category = form_dict['ProductCategory'], 
+            start_price = form_dict['ProductStartPrice'],
+            current_price = 0,
+            auction_end_time = form_dict['ProductAuctionEnd'],
+            seller = request.user )
+        if add_products:
+            messages.success(request,'Your Product is Upload Successfully')
+            return redirect('product_detail', add_products.id)
+        else:
+            messages.error(request,'Somthing Went Wrong')
+            print('unsuccessfully')
+    return render(request,'addproduct.html', addproduct_dict)

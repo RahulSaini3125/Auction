@@ -40,6 +40,7 @@ urlpatterns = [
     path('removecart/',views.remove_cart,name='removecart'),
     path('pluswishlist/',views.plus_wishlist,name='pluswishlist'),
     path('minuswishlist/',views.minus_wishlist,name='minuswishlist'),
+    path('addproduct/',views.addproduct,name='addproduct'),
     # path('create/', views.create_auction, name='create_auction'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
