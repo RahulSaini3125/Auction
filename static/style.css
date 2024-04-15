@@ -89,3 +89,22 @@ body {
     font-size: 18px;
     color: #dc3545;
 }
+
+.fa-plus{
+    font-size: 10rem;
+    cursor: pointer;
+}
+
+.add-card-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+}
+
+.add_address{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: black;
+}

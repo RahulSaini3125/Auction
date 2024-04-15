@@ -41,6 +41,7 @@ urlpatterns = [
     path('pluswishlist/',views.plus_wishlist,name='pluswishlist'),
     path('minuswishlist/',views.minus_wishlist,name='minuswishlist'),
     path('addproduct/',views.addproduct,name='addproduct'),
+    path('add_address/',views.add_address,name='add_address'),
     # path('create/', views.create_auction, name='create_auction'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

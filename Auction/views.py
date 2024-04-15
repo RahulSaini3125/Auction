@@ -376,3 +376,21 @@ def addproduct(request):
             messages.error(request,'Somthing Went Wrong')
             print('unsuccessfully')
     return render(request,'addproduct.html', addproduct_dict)
+
+def add_address(request):
+    form = CustomerProfileForm(request.POST)
+    if form.is_valid():
+        user = request.user
+        name = form.cleaned_data['name']
+        locality = form.cleaned_data['locality']
+        city = form.cleaned_data['city']
+        mobile = form.cleaned_data['mobile']
+        state = form.cleaned_data['state']
+        pincode = form.cleaned_data['pincode']
+        reg = Customer(user = user , name = name , locality = locality , city = city , mobile = mobile, state = state , pincode = pincode)
+        reg.save()
+        messages.success(request,"Congratulations! Profile Save Succesfully")
+        return redirect('address')
+    else:
+        messages.warning(request,"Invalid Input Data")
+    return render(request,'add_address.html',{'form':form})
