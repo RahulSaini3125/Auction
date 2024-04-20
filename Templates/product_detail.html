@@ -11,8 +11,8 @@
     <p>Auction is Over Now And waiting for Result Delcare</p>
 
 {% elif status == 1 %}
-        <p>Start Price: ${{ product.start_price }}</p>
-    <p>Current Price: ${{ product.current_price }} </p>
+        <p>Start Price: Rs.{{ product.start_price }}</p>
+    <p>Current Price: Rs.{{ product.current_price }} </p>
     <p>Your Price:  <a href="{% url 'browseauctions' product.pk %}">Add Your Price</a></p>
     {% if bid_details %}
         <ul style="list-style: none;">

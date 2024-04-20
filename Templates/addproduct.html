@@ -4,10 +4,10 @@
 
 {% block main-content %}
 <h1>Add Products</h1>
-<form action="{% url 'addproduct' %}" method="post" enctype="multipart/form-data">
+<form action="{% url 'addproduct' %}" method="post" enctype="multipart/form-data" class="add-product-form">
     {% csrf_token %}
     <div>
-        <label for="ProductName">Product Name: </label>
+        <label for="ProductName">Product Name:</label>
         <input type="text" name="ProductName" placeholder="Enter Product Name">
     </div>
     <div>
@@ -19,7 +19,7 @@
         <input type="file" name="ProductImage" accept=".png,.jpeg">
     </div>
     <div>
-        <label for="ProductCategory"> Product Category:</label>
+        <label for="ProductCategory">Product Category:</label>
         <select name="ProductCategory" id="">
             <option value="">--Select Category--</option>
             {% for i, j in choices.items %}
@@ -28,11 +28,11 @@
         </select>
     </div>
     <div>
-        <label for="ProductStartPrice"> Product Start Price: </label>
+        <label for="ProductStartPrice">Product Start Price:</label>
         <input type="number" name="ProductStartPrice">
     </div>
     <div>
-        <label for="ProductAuctionEnd"> Auction End Date and Time</label>
+        <label for="ProductAuctionEnd">Auction End Date and Time:</label>
         <input type="datetime-local" name="ProductAuctionEnd">
     </div>
     <button type="submit">Add Product</button>
