@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Address{% endblock title %}
+
+{% block main-content %}
+
+
+<div>
+    <h1>
+        Winning Result
+    </h1>
+    <table border="2px solid">
+        <tr>
+            <th>Product Name:</th>
+            <th>Product Category: </th>
+            <th>Product Start Price</th>
+            <th>Product Highest Price</th>
+            <th>Auction End Date</th>
+            <th>Seller Name: </th>
+            <th>Higher Bid Name:</th>
+            <th>Status</th>
+            <th>Declare</th>
+        </tr>
+        {% for result in winning_result %}
+        {% if result.status != "expired" %}
+        <tr>
+            <td> {{result.name }} </td>
+            <td> {{result.get_category_display }} </td>
+            <td>{{ result.start_price }}</td>
+            <td>{{ result.current_price }}</td>
+            <td>{{ result.auction_end_time }}</td>
+            <td>{{ result.seller.username }}</td>
+            {% for higher in higher_bid %}
+                {% if higher.item == result %} 
+                {% if higher.bid_amount == result.current_price %}
+                    <td style="color: red;">{{higher.bidder.username}}</td>
+                {% endif %}
+                {% endif %}
+            {% endfor %}
+            <td>{{ result.get_status_display }}</td>
+            <td><a  id="{{result.id}}" href="" onclick="declare(this.id)"> Declare Winner</a></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+</div>
+
+<script>
+    function declare(id){
+        $.ajax({
+            url: "/Winning_Result_declare/",
+            type: "POST",
+            data: {
+                "id": id,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success: function(){
+                console.log('Declare Result')
+                window.location.reload()
+            }
+        })
+    }
+</script>
+{% endblock main-content %}

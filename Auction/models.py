@@ -81,15 +81,17 @@ class Products(models.Model):
     start_price = models.DecimalField(max_digits=10, decimal_places=2)
     current_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     auction_end_time = models.DateTimeField(default=None, null=True)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller_name")
     STATUS_CHOICES = (
         ('active', 'Active'),
         ('sold', 'Sold'),
         ('expired', 'Expired'),
+        ('result','Waiting for Decalre Result')
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    sold_to = models.ForeignKey(User,on_delete=models.CASCADE, related_name="Sell_to", null=True, blank=True)
 
     def __str__(self):
         return self.name

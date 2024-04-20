@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.http import JsonResponse
+from django.utils import timezone
 
 # Create your views here.
 
@@ -143,6 +144,7 @@ def browseauctions(request, id):
     auctions = Products.objects.get(pk = id)
     try:
         if request.method == "POST":
+            print(request.POST.get('bid_amount'))
             if auctions.place_bid( bid_amount= float(request.POST.get('bid_amount'))):
                 Bid.objects.create(bidder = request.user,item = auctions , bid_amount = float(request.POST.get('bid_amount')))
                 print('Bid Place Successfully')
@@ -183,8 +185,23 @@ def place_bid(request, item_id):
 def product_detail(request, item_id):
     # Retrieve the product object based on the provided item_id
     product = get_object_or_404(Products, pk=item_id)
+    status = 1
+    if product.status == "sold":
+        status = 0
+    elif product.status == "expired":
+        status = 3
+    elif product.auction_end_time < timezone.now():
+        status = 2
+    elif product.status == "active" or product.status == "result":
+        status = 1
+    else:
+        status = 0
     bid_details =  Bid.objects.filter(bidder = request.user, item = product).order_by('-timestamp').all()
-    return render(request, 'product_detail.html', {'product': product, 'bid_details': bid_details})
+    return render(request, 'product_detail.html', {'product': product,
+                                                    'bid_details': bid_details,
+                                                    "status" : status
+                                                    }
+                )
 
 @method_decorator(login_required,name='dispatch')
 class CategoryView(View):
@@ -394,3 +411,31 @@ def add_address(request):
     else:
         messages.warning(request,"Invalid Input Data")
     return render(request,'add_address.html',{'form':form})
+
+def Winning_Result(request,id=None):
+    print("in")
+    Winning_Result_Dict = {}
+    winning_result = Products.objects.filter(auction_end_time__lt = timezone.now()).exclude(status = "sold").order_by("-auction_end_time")
+    for winning in winning_result:
+        if winning.status == "active":
+            winning.status = "result"
+            winning.save()
+    higher_bid = Bid.objects.all()
+    Winning_Result_Dict["winning_result"] = winning_result
+    Winning_Result_Dict["higher_bid"] = higher_bid
+    return render(request,"Winning.html",Winning_Result_Dict)
+
+def Winning_Result_Declare(request):
+    if request.method == "POST":
+        data = request.POST.get('id')
+        higher_bid = Bid.objects.all()
+        get_obj = Products.objects.get(id= request.POST.get("id"))
+        get_obj.status = "sold"
+        for higher in higher_bid:
+            if higher.item == get_obj and higher.bid_amount == get_obj.current_price:
+                get_obj.sold_to = higher.bidder
+        get_obj.save()
+        return JsonResponse({
+            "status": 'success',
+            'message': 'Done Successfully'
+        })
