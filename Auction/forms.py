@@ -57,3 +57,14 @@ class AuctionForm(forms.ModelForm):
 
 class BidForm(forms.Form):
     bid_amount = forms.DecimalField(label='Bid Amount', max_digits=10, decimal_places=2, min_value=0, required=True)
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'last_name','email','last_login','date_joined']
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+            # Disable fields
+        self.fields['email'].disabled = True
+        self.fields['last_login'].disabled = True
+        self.fields['date_joined'].disabled = True
