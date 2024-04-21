@@ -156,26 +156,6 @@ def browseauctions(request, id):
         print(e)
     return render(request, 'browseauctions.html' , {'auction': auctions})
 
-# def place_bid(request, item_id):
-#     product = get_object_or_404(Products, id=item_id)
-#     if request.method == 'POST':
-#         form = BidForm(request.POST)
-#         if form.is_valid():
-#             bid_amount = form.cleaned_data['bid_amount']
-#             if bid_amount > product.current_price:
-#                 product.current_price = bid_amount
-#                 product.save()
-#                 print(request.user.id)
-#                 Bid.objects.create(bidder = request.user.id, item = item_id, bid_amount = bid_amount)
-#                 return redirect('product_detail', item_id=item_id)
-#             else:
-#                 form.add_error('bid_amount', 'Bid amount must be higher than the current price.')
-#     else:
-        
-#         form = BidForm()
-#     return render(request, 'place_bid.html', {'form': form, 'product': product})
-
-
 def place_bid(request, item_id):
     if request.method == "POST":
         product_detail =  get_object_or_404(Products, id = item_id)
