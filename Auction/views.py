@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login,logout
-from .forms import CustomerRegistrationForm,CustomerProfileForm,AuctionForm,BidForm,ProductForm
+from .forms import CustomerRegistrationForm,CustomerProfileForm,AuctionForm,BidForm,ProductForm, UserForm
 from .models import Bid, Customer,auction,Wishlist,Products,Payment,Cart,OrderPlaced, CATEGORY_CHOICES
 from django.contrib import messages
 from django.views import View
@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -68,30 +69,18 @@ class CustomerRegistrationView(View):
 @method_decorator(login_required,name='dispatch')      
 class ProfileView(View):
     def get(self,request):
-        form = CustomerProfileForm()
-        totalitem = 0
-        wishitem = 0
+        user_detail = User.objects.get(username = request.user)
+        form = UserForm(instance=user_detail)
         # if request.user.is_authenticated:
         #     totalitem = len(Cart.objects.filter(user = request.user))
         #     wishitem = len(Wishlist.objects.filter(user=request.user))
         return render(request,'profile.html',locals())
 
     def post(self,request):
-        form = CustomerProfileForm(request.POST)
-        
+        form = UserForm( instance= request.user,  data= request.POST)
         if form.is_valid():
-            user = request.user
-            name = form.cleaned_data['name']
-            locality = form.cleaned_data['locality']
-            city = form.cleaned_data['city']
-            mobile = form.cleaned_data['mobile']
-            state = form.cleaned_data['state']
-            pincode = form.cleaned_data['pincode']
-            
-            reg = Customer(user = user , name = name , locality = locality , city = city , mobile = mobile, state = state , pincode = pincode)
-            reg.save()
+            form.save()
             messages.success(request,"Congratulations! Profile Save Succesfully")
-            
         else:
             messages.warning(request,"Invalid Input Data")
             
@@ -395,21 +384,24 @@ def addproduct(request):
     return render(request,'addproduct.html', addproduct_dict)
 
 def add_address(request):
-    form = CustomerProfileForm(request.POST)
-    if form.is_valid():
-        user = request.user
-        name = form.cleaned_data['name']
-        locality = form.cleaned_data['locality']
-        city = form.cleaned_data['city']
-        mobile = form.cleaned_data['mobile']
-        state = form.cleaned_data['state']
-        pincode = form.cleaned_data['pincode']
-        reg = Customer(user = user , name = name , locality = locality , city = city , mobile = mobile, state = state , pincode = pincode)
-        reg.save()
-        messages.success(request,"Congratulations! Profile Save Succesfully")
-        return redirect('address')
+    if request.method == "POST":
+        form = CustomerProfileForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            name = form.cleaned_data['name']
+            locality = form.cleaned_data['locality']
+            city = form.cleaned_data['city']
+            mobile = form.cleaned_data['mobile']
+            state = form.cleaned_data['state']
+            pincode = form.cleaned_data['pincode']
+            reg = Customer(user = user , name = name , locality = locality , city = city , mobile = mobile, state = state , pincode = pincode)
+            reg.save()
+            messages.success(request,"Congratulations! Profile Save Succesfully")
+            return redirect('address')
+        else:
+            messages.warning(request,"Invalid Input Data")
     else:
-        messages.warning(request,"Invalid Input Data")
+        form = CustomerProfileForm()
     return render(request,'add_address.html',{'form':form})
 
 def Winning_Result(request,id=None):
