@@ -357,8 +357,8 @@ def search(request):
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user = request.user))
         wishitem = len(Wishlist.objects.filter(user=request.user))
-    product = Products.objects.filter(Q(title__icontains=query))
-    return render(request,'search.html',locals())
+    product = Products.objects.filter(Q(name__icontains=query))
+    return render(request,'search.html',{'Product':product})
 
 @login_required    
 def orders(request):

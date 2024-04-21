@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block title %}Search Result{% endblock title %}
@@ -10,25 +9,23 @@
         <div class = "row">
             <div class = "col-sm-8">
                 <div class = "row">
-                    {% for prod in product %}
-                        <div class = "col-sm-4 text-center mb-4 hover-shadow">
-                            <a href = "{% url 'productdetail' prod.id %}" class = "btn">
-                                <div>
-                                    <img src = {{prod.product_image.url}} width="300px" height = "200px" />
-                                    <div class = "fw-bold">
-                                        {{prod.title}}
-                                    </div>
-                                    <div class = "fw-bold text-danger">
-                                        Rs.{{prod.discounted_price}}/-
-                                        <small class = "fw-light text-decoration-line-through">
-                                            {{prod.selling_price}}
-                                        </small>
-                                    </div>
-                                </div>
-                            </a>
+                    {% for product_items in Product %}
+        <div class = "col-md-4 col-sm-4  mi-go wow fadeInUp" data-wow-duration = "1s"
+        data-wow-delay = "0.6s" style = "animation-duration: 1s; animation-delay: 0.6s; animation-name : none;"> 
+        <p class = "ph1">{{product_items.name}}</p>
+            <div class = "goodnesssec MobilePhone smbg">
+                <a href = "{% url 'product_detail' product_items.id %}">
+                    <div class = "goodnessseccont text-center">
+                        <img src="{{ product_items.image.url }}" class = "img-responsive" alt = "img" width="100%" height = "250"/>
+                        <div style="display: flex;  justify-content: space-around;">
+                            <p class="ph1"> Rs {{product_items.current_price}}</p>
+                            <p class="ph1"> End Date: {{product_items.auction_end_time}}</p>
                         </div>
-
-                    {% endfor %}
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
                 </div>
             </div>
         </div>
